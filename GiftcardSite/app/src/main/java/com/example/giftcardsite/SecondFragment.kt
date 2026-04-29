@@ -1,7 +1,6 @@
 package com.example.giftcardsite
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -11,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.navigation.fragment.findNavController
 import com.example.giftcardsite.api.model.RegisterInfo
 import com.example.giftcardsite.api.model.User
 import com.example.giftcardsite.api.service.UserInterface
@@ -45,7 +43,7 @@ class SecondFragment : Fragment() {
             var password : String = view.findViewById<EditText>(R.id.registerPassword).text.toString()
             var password2 : String = view.findViewById<EditText>(R.id.registerConfirmPassword).text.toString()
 
-            var builder: Retrofit.Builder = Retrofit.Builder().baseUrl("http://appsec.moyix.net").addConverterFactory(GsonConverterFactory.create())
+            var builder: Retrofit.Builder = Retrofit.Builder().baseUrl("https://appsec.moyix.net").addConverterFactory(GsonConverterFactory.create())
             var retrofit: Retrofit = builder.build()
             var client: UserInterface = retrofit.create(UserInterface::class.java)
             var loggedInUser: User? = null;
@@ -53,7 +51,6 @@ class SecondFragment : Fragment() {
             Log.d("Register Going", "Going to register now.")
             client.registerUser(registerInfo)?.enqueue(object : Callback<User?> {
                 override fun onFailure(call: Call<User?>, t: Throwable) {
-                    Log.d("Register Failure", "Register Failure in onFailure")
                     Log.d("Register Failure", t.message.toString())
 
                 }
@@ -65,10 +62,7 @@ class SecondFragment : Fragment() {
                     } else {
                         loggedInUser = response.body()
                         Log.d("Register Success", "Register success. Boo.")
-                        Log.d("Register Success", "Token:" + loggedInUser?.token.toString())
-                        var intent = Intent(Intent.ACTION_VIEW)
-                        intent.type = "text/giftcards_browse"
-                        intent.data = Uri.parse("https://appsec.moyix.net/api/index")
+                        var intent = Intent(requireContext(), ProductScrollingActivity::class.java)
                         intent.putExtra("User", loggedInUser);
                         startActivity(intent)
                     }

@@ -43,7 +43,7 @@ class ThirdFragment : Fragment() {
             var username : String = view.findViewById<EditText>(R.id.username).text.toString()
             var password : String = view.findViewById<EditText>(R.id.registerPassword).text.toString()
 
-            var builder: Retrofit.Builder = Retrofit.Builder().baseUrl("http://appsec.moyix.net").addConverterFactory(
+            var builder: Retrofit.Builder = Retrofit.Builder().baseUrl("https://appsec.moyix.net").addConverterFactory(
                 GsonConverterFactory.create())
             var retrofit: Retrofit = builder.build()
             var client: UserInterface = retrofit.create(UserInterface::class.java)
@@ -52,19 +52,15 @@ class ThirdFragment : Fragment() {
             client.loginUser(loginInfo)?.enqueue(object :
                 Callback<User?> {
                 override fun onFailure(call: Call<User?>, t: Throwable) {
-                    Log.d("Login Failure", "Login Failure in onFailure")
                     Log.d("Login Failure", t.message.toString())
 
                 }
 
                 override fun onResponse(call: Call<User?>, response: Response<User?>) {
                     if (!response.isSuccessful) {
-                        Log.d("Login Failure", "Login failure. Yay.")
                         Toast.makeText(activity, "Login Failed", Toast.LENGTH_LONG).show()
                     } else {
                         loggedInUser = response.body()
-                        Log.d("Login Success", "Login success. Boo.")
-                        Log.d("Login Success", "Token:" + loggedInUser?.token.toString())
                         var intent = Intent(activity, ProductScrollingActivity::class.java)
                         intent.putExtra("User", loggedInUser);
                         startActivity(intent)
